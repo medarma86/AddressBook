@@ -1,0 +1,15 @@
+.btn-color {
+  background-color: #333333;
+  border-color: #333333;
+  margin-bottom: 1%;
+}
+
+.profile-size {
+  width: 30%;
+  height: 50%;
+  border-radius: 50%;
+}
+
+.float-right {
+  float: right;
+}

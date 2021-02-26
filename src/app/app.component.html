@@ -1,0 +1,119 @@
+<div class="container-fluid">
+  <div class="row">
+  <div class="col-sm-12">
+    <a role="button" class="btn btn-primary btn-icon btn-sm btn-color" (click)="ShowAddForm()">
+      <i class="fa fa-plus" aria-hidden="true"></i>
+      Add Address</a>
+    <p-table #dt [columns]="cols" [value]="addressList" [autoLayout]="true" [paginator]="true" [rows]="10" exportFilename="AddressList">
+      <ng-template pTemplate="caption">
+        <div class="row">
+          <div class="col-md-6" style="text-align: left">
+            <i class="fa fa-search" aria-hidden="true" style="margin:4px 4px 0 0"></i>
+            <input type="text" pInputText size="25" placeholder="Global Filter"
+              (input)="dt.filterGlobal($event.target.value, 'contains')" style="width:auto">
+          </div>
+          <div class="col-md-6">
+            <button type="button" class="cb-btn float-right" (click)="dt.exportCSV()" data-toggle="tooltip" data-placement="bottom" 
+            title="Export to CSV"><i class="fa fa-file-excel-o fa-lg" style="cursor: pointer;"></i> Download File
+          </button>
+          <!-- <i class="fa fa-file-excel-o fa-lg float-right" style="cursor: pointer;" (click)="downloadFile()" data-toggle="tooltip"
+              data-placement="bottom" title="Export to Excel - Including Image Data"></i>   -->
+        </div> 
+
+        </div>   
+      </ng-template>
+      <ng-template pTemplate="header" let-columns>
+        <tr>
+          <th>S.No</th>
+          <ng-template ngFor let-col [ngForOf]="columns">
+            <span *ngIf="col.sort; then sortHeader else disorderHeader"></span>
+            <ng-template #sortHeader>
+              <th [pSortableColumn]="col.field">
+                {{col.header}}
+                <p-sortIcon [field]="col.field"></p-sortIcon>
+              </th>
+            </ng-template>
+            <ng-template #disorderHeader>
+              <th>
+                {{col.header}}
+              </th>
+            </ng-template>
+          </ng-template>             
+          <th>Actions</th>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="body" let-rowData let-index="rowIndex">
+        <tr>
+             <td>{{index+1}}</td>   
+             <td>{{rowData.firstName}}</td>
+             <td>{{rowData.lastName}}</td>
+             <td>{{rowData.phoneNumber}}</td>
+             <td>{{rowData.address}}</td>       
+           <td> 
+            <i class="fa fa-pencil-square-o fa-lg fa-fw" title="Edit" (click)="showEditForm(index)"
+              style="cursor: pointer;"></i>
+            <i class="fa fa-trash-o fa-lg fa-fw" title="Delete" (click)="deleteAddress(index)"
+              style="cursor: pointer;"></i>
+          </td>
+        </tr>
+      </ng-template>    
+      <ng-template pTemplate="summary">       
+        Total Number of Records: {{addressList?.length}}         
+    </ng-template>   
+    </p-table>
+  </div>
+  </div>
+ </div>
+ <form #saveForm="ngForm" autocomplete="off">
+  <p-dialog header="Address Form" [(visible)]="displayModal" [modal]="true" [responsive]="true" 
+  [style]="{width: '700px', minWidth: '500px'}" focusOnShow="false" [contentStyle]="{minHeight: '380px'}">
+  <div class="row">
+    <div class="form-group col-md-6">         
+      <label for="firstName" class="required">First Name</label>
+      <input type="text" id="firstName" class="form-control" [(ngModel)]="model.firstName" name="firstName"
+      [class.is-invalid]="firstName.invalid && firstName.touched"
+        #firstName="ngModel" maxlength="20" required>
+        <small class="text-danger" [class.d-none]="firstName.valid || firstName.untouched">First Name is Required</small>           
+    </div>
+    <div class="form-group col-md-6">       
+      <label for="lastName" class="required">Last Name</label>
+      <input type="text" id="lastName" class="form-control" [(ngModel)]="model.lastName" name="lastName"
+      [class.is-invalid]= "lastName.invalid && lastName.touched"
+        #lastName="ngModel" maxlength="20" required>
+        <small class="text-danger" [class.d-none]="lastName.valid || lastName.untouched">Last Name is Required</small>    
+    </div>
+    <div class="form-group col-md-12">       
+    <label for="address" class="required">Address</label>     
+      <textarea id="address" class="form-control" [(ngModel)]="model.address" name="address"
+      [class.is-invalid]="address.invalid && address.touched"
+      #address="ngModel"   maxlength="100" required></textarea>
+      <small class="text-danger" [class.d-none]="address.valid || address.untouched">Address is Required</small>    
+  </div>
+    <div class="form-group col-md-6"> 
+      <label for="fileLabel">Upload Picture:</label> 
+       <input type="file" #fileInput id="file" (change)="onUploadChange($event)"/>
+   </div>
+    <div class="form-group col-md-6">
+      <label for="phoneNumber">Phone Number</label>
+      <input type="text" class="form-control" [(ngModel)]="model.phoneNumber" id="phoneNumber" pattern="[0-9]{12}" 
+      pKeyFilter="int" name="phoneNumber" #phoneNumber="ngModel" maxlength="12">
+        <small class="text-danger" [class.d-none]="phoneNumber.valid">Enter valid Country Code & Phone Number</small>
+      </div>
+  <div class="form-group col-md-12" *ngIf="model.file">
+    <div class="form-group col-md-6">
+      <img class="profile-size" src={{model.file}} alt="" id="img"> 
+      </div> 
+      <div class="form-group col-md-6">
+      <a class="btn btn-sm btn-secondary" (click)="removeImage()">Remove</a> 
+      </div>
+  </div>
+  </div>  
+    <p-footer>
+      <button type="submit" id ="saveBtn" class="btn btn-dark btn-sm" (click)="submitForm()" data-dismiss="modal"
+        [disabled]="saveForm.invalid">Save</button>
+      <button type="button" class="btn btn-default btn-sm" (click)="resetForm()">Reset</button>         
+    </p-footer>
+  </p-dialog>
+</form>
+<p-confirmDialog header="Confirmation" icon="pi pi-exclamation-triangle" width="425"></p-confirmDialog>
+
