@@ -9,3 +9,5 @@ Step 4: Go to a folder(address-book-win32-x64) which got created in project dire
 
 
 **Note: In case if you want to quickly access the application for windows ,extract address-book-win32-x64 zip file which exists in project directory and  please perform step 4 directly.**
+
+Note: In case if you want to compile the application in your local, please run the following command in project directory - npm run start:electron
